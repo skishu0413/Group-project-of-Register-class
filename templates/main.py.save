@@ -1,0 +1,157 @@
+from flask import render_template, flash, redirect, url_for, request, Flask
+from flask_login import LoginManager, UserMixin, login_user, logout_user, \
+    current_user, login_required
+from werkzeug.urls import url_parse
+from werkzeug.security import check_password_hash, generate_password_hash
+from wtforms import Form, SelectField, TextField, PasswordField, validators, SubmitField
+from wtforms.validators import ValidationError, DataRequired, EqualTo
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from flask_wtf import FlaskForm
+import sys
+# Login form (subclassed from FlaskForm)
+class LoginForm(FlaskForm):
+    username = TextField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Sign In')
+class AddUserForm(FlaskForm):
+    options = [('1', 'User'), ('2', 'Admin')]
+    username = TextField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    role = SelectField('Role', choices = options)
+    submit = SubmitField('Add User')
+class ClassRegisterForm(FlaskForm):
+    classID  = TextField('Enter the ID of the Class', validators=[DataRequired()])
+    submit = SubmitField('Add Class')
+
+# User class, subclassed from UserMixin for convenience.  UserMixin
+# provides attributes to manage user (e.g. authenticated).  The User
+# class defines a "role" attribute that represents the user role (e.g.  Regular
+# user or admin)
+class User(UserMixin):
+    def __init__(self, username, password, role):
+        self.id = username
+        self.classes = []
+        self.waitlists = []
+        self.waitlistsDict = {}
+        self.classesDict = {}
+        # hash the password and output it to stderr
+        self.pass_hash = generate_password_hash(password)
+        print(self.pass_hash, file=sys.stderr)
+        self.role = role
+# creating the Flask app object and login manager
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'a hard to guess string'
+bootstrap = Bootstrap(app)
+moment = Moment(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+# Our mock database of user objects, stored as a dictionary, where the
+# key is the user id, and the value is the User object.  Typically, these
+# would need
+user_db = {'u': User('u', 'u', 'user'), 'a': User('a', 'a', 'admin')}
+# Returns True if logged in user has "admin" role, False otherwise.
+def is_admin():
+    if current_user:
+        if current_user.role == 'admin':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)
+# Login manager uses this function to manage user sessions.
+# Function does a lookup by id and returns the User object if
+# it exists, None otherwise.
+@login_manager.user_loader
+def load_user(id):
+    return user_db.get(id)
+@app.route('/')
+@app.route('/index')
+@login_required
+def index():
+    return render_template('index.html', name=current_user.id)
+# This mimics a situation where a non-admin user attempts to access
+# an admin-only area.  @login_required ensures that only authenticated
+# users may access this route.
+@app.route('/admin_only')
+@login_required
+def admin_only():
+    # determine if current user is admin
+    if is_admin():
+        return render_template('admin.html', message="I am admin.")
+    else:
+        return render_template('unauthorized.html')
+@app.route('/add_user', methods=['GET', 'POST'])
+@login_required
+def add_user():
+    if is_admin():
+        form = AddUserForm()
+        print('yo', file=sys.stderr)
+    else:
+        return render_template('unauthorized.html')
+    if form.validate_on_submit():
+        if form.role.data == '1':
+            a = 'user'
+        elif form.role.data == '2':
+            a = 'admin'
+        user_db[form.username.data] = User(form.username.data, form.password.data, a)
+        print(user_db[form.username.data].role)
+    return render_template('adduser.html', form=form)
+@app.route('/success')
+def success():
+    return render_template('success.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    # display the login form
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = user_db[form.username.data]
+        # validate user
+        valid_password = check_password_hash(user.pass_hash, form.password.data)
+        if user is None or not valid_password:
+            print('Invalid username or password', file=sys.stderr)
+            redirect(url_for('index'))
+        else:
+            login_user(user)
+            return redirect(url_for('success'))
+    return render_template('login.html', title='Sign In', form=form)
+# logging out is managed by login manager
+# Log out option appears on the navbar only after a user logs on
+# successfully (see lines 25-29 of templates/base.html )
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+class sClass(UserMixin):
+    def __init__(self, className, currentEnrollment, maxEnrollment, currentWaitlist, maxWaitlist):
+        self.className = className
+        self.currentEnrollment = currentEnrollment
+        self.maxEnrollment = maxEnrollment
+        self.currentWaitlist = currentWaitlist
+        self.maxWaitlist = maxWaitlist
+
+class_db = {'1': sClass('Anthroplogy', 0, 3, 0, 5), '2': sClass('History', 0, 3, 0, 5), '3': sClass('Calculus', 0, 3, 0, 5)}
+
+@app.route('/class-register', methods=['GET', 'POST'])
+@login_required
+def classregister():
+    result = ''
+    if is_student():
+        form = ClassRegisterForm()
+    else:
+        return render_template('unauthorized.html')
+    if form.validate_on_submit():
+
+    return render_template('class-register.html', form=form)
+
+def is_student():
+    if current_user:
+        if current_user.role == 'user':
+            return True
+        else:
+            return False
+    else:
+        print('User not authenticated.', file=sys.stderr)

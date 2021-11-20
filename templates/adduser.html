@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Add User Form{% endblock %}
+{% block page_content %}
+<div class="page-header">
+        {% if current_user.is_authenticated %}
+         <h1>Add User Form</h1>
+         {{ wtf.quick_form(form) }}
+         {{message}}
+
+         <h1>Current Users</h1>
+<table style="margin-top: 10px">
+        <tr>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Username</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Password</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Role</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">First Name</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Last Name</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Grade</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">E-mail Address</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Waitlist 1</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Waitlist 2</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Waitlist 3</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Waitlist Amount</th>
+        </tr>
+        {% for class in users_directory %}
+        <tr>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[0] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[1] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[2] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[3] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[4] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[5] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[6] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[7] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[8] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[9] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[10] }}</td>
+        </tr>
+        {% endfor %}
+</table>
+
+
+
+         {% endif %}
+</div>
+{% endblock %}
+

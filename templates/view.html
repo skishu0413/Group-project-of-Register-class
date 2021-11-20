@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Welcome!{% endblock %}
+{% block page_content %}
+
+<ul>
+{% for city in cities_result %}
+        <li>{{ city[0] }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
+

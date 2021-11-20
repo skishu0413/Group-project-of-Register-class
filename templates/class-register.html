@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Register for a Class{% endblock %}
+{% block page_content %}
+{% if current_user.is_authenticated %}
+<div class="page-header">
+         <h1>Search for a Class:</h1>
+         {{ wtf.quick_form(form) }}
+{{ message }}
+<table style="margin-top: 10px">
+        <tr>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">CRN</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Subject</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Number</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Section Number</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Name</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Days</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Time</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Instructor</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Type</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Max Enrollment</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Current Enrollment</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Max Waitlist</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Current Waitlist</th>
+        </tr>
+        {% for class in classes_result %}
+        <tr>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[0] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[1] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[2] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[3] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[4] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[5] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[6] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[7] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[8] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[9] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[10] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[11] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[12] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">
+                <form method="post" action="/test">
+                        <input type="submit" value="Join Waitlist" name={{ class[0] }}/>
+                </form>
+                </td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">
+                <form method="post" action="/watch">
+                        <input type="submit" value="Watch" name={{ class[0] }}/>
+                </form>
+                </td>
+
+
+        </tr>
+        {% endfor %}
+</table>
+<h1>Your current waitlists:</h1>
+<table style="margin-top: 10px">
+        <tr>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">CRN</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Subject</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Number</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Section Number</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Name</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Days</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Time</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Instructor</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Type</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Max Enrollment</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Current Enrollment</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Max Waitlist</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Current Waitlist</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Your Spot</th>
+        </tr>
+        {% for class in current_waitlists %}
+        <tr>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[0] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[1] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[2] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[3] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[4] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[5] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[6] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[7] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[8] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[9] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[10] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[11] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[12] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[16] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">
+                <form method="post" action="/remove">
+                        <input type="submit" value="Remove Waitlist" name={{ class[0] }}/>
+                </form>
+                </td>
+        </tr>
+        {% endfor %}
+</table>
+<h1>Your current watchlists:</h1>
+<table style="margin-top: 10px">
+        <tr>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">CRN</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Subject</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Number</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Section Number</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Name</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Days</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Time</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Instructor</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Type</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Max Enrollment</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Current Enrollment</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Max Waitlist</th>
+                <th style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">Current Waitlist</th>
+        </tr>
+        {% for class in list_of_watchlists  %}
+        <tr>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[0] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[1] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[2] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[3] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[4] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[5] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[6] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[7] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[8] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[9] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[10] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[11] }}</td>
+                <td style="padding-left: 6px; padding-right:16px; border: 1px solid #000000">{{ class[12] }}</td>
+        </tr>
+        {% endfor %}
+</table>
+
+
+
+
+
+
+         {% endif %}
+</div>
+{% endblock %}
+
